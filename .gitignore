@@ -150,13 +150,15 @@ activemq-data/
 # Environments
 .env
 .envrc
+.artifacts
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
-
+__pycache__/
+*.pyc
 # Spyder project settings
 .spyderproject
 .spyproject
