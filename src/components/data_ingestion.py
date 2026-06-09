@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 
 from src.exception import CustomException
 from src.logger import logging
+from src.components.data_trans import DataTransformation
 
 
 @dataclass
@@ -20,38 +21,37 @@ class DataIngestion:
         self.ingestion_config = DataIngestionConfig()
 
     def initiate_data_ingestion(self):
-        logging.info("Entered the data ingestion method or component")
+        logging.info("Entered Data Ingestion component")
 
         try:
-            # FIX: safe path handling (no backslash issues)
             file_path = os.path.join("src", "eda", "StudentsPerformance.csv")
             df = pd.read_csv(file_path)
 
-            logging.info("Dataset successfully read as dataframe")
+            logging.info("Dataset loaded successfully")
 
-            # Create artifacts directory
+            # create artifacts folder
             os.makedirs(
                 os.path.dirname(self.ingestion_config.train_data_path),
                 exist_ok=True
             )
 
-            # Save raw data
+            # save raw data
             df.to_csv(self.ingestion_config.raw_data_path, index=False)
-            logging.info("Raw data saved successfully")
+            logging.info("Raw data saved")
 
-            # Train-test split
-            logging.info("Train-test split initiated")
+            # split data
+            logging.info("Train-test split started")
             train_set, test_set = train_test_split(
                 df,
                 test_size=0.2,
                 random_state=42
             )
 
-            # Save train and test sets
+            # save splits
             train_set.to_csv(self.ingestion_config.train_data_path, index=False)
             test_set.to_csv(self.ingestion_config.test_data_path, index=False)
 
-            logging.info("Data ingestion completed successfully")
+            logging.info("Data ingestion completed")
 
             return (
                 self.ingestion_config.train_data_path,
@@ -64,4 +64,12 @@ class DataIngestion:
 
 if __name__ == "__main__":
     obj = DataIngestion()
-    obj.initiate_data_ingestion()
+    train_data, test_data = obj.initiate_data_ingestion()
+
+    data_transformation = DataTransformation()
+
+    # FIXED METHOD NAME
+    train_arr, test_arr, _ = data_transformation.initiate_data_trans(
+        train_data,
+        test_data
+    )
